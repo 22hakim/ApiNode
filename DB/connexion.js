@@ -1,33 +1,26 @@
-const { MongoClient, Db } = require('mongodb');
+const { MongoClient } = require('mongodb');
 
-var client = null;
+async function connect(url) {
+    const client = new MongoClient(url);
+    try {
+        await client.connect();
 
-function connect(url,callback){
-    if (client == null) {
-        client = new MongoClient(url);
-        client.connect(erreur => {
-            if(erreur){
-                client = null;
-                callback(erreur);
-            }else{
-                callback();
-            }
-        })
-    }else{
-        callback();
-    }
-}
-
-function openDbConnexion(){
-    return new Db(client, 'testdb');
-}
-
-function closeDbConnexion(){
-    if(client != null)
+        await listDatabases(client);
+    } catch (e) {
+        console.error(e);
+    } finally 
     {
-        client.close();
-        client = null;
+        await client.close();
     }
 }
 
-module.exports= {connect, closeDbConnexion, openDbConnexion};
+async function listDatabases(client){
+    
+    const databasesList = await client.db().admin().listDatabases(); 
+    console. log ("Databases:");
+    databasesList.databases.forEach(db => {
+        console.log(`- ${db. name}`);
+    })
+}
+
+module.exports = { connect , listDatabases};
