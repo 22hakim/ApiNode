@@ -5,7 +5,7 @@ async function connect(url) {
     try {
         await client.connect();
 
-        await listDatabases(client);
+        //await listDatabases(client);
     } catch (e) {
         console.error(e);
     } finally 
@@ -23,4 +23,4 @@ async function listDatabases(client){
     })
 }
 
-module.exports = { connect , listDatabases};
+module.exports = { connect };
