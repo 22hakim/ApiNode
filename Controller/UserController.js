@@ -1,14 +1,14 @@
 const { User } = require("../Models/User");
-// const client = require("../DB/connexion");
-
 const {db} = require("../DB/db.js");
 
 const getUser = async(req, res)=>{
     try {
-        let result = await client.collection("user").find();
-
-        res.status(200).json({result});
-
+        const client = await db();
+        let collection = client.collection("user");
+        let results = await collection.find({})
+        .limit(50)
+        .toArray();
+        res.send(results).status(200);
     } catch (error) {
         console.log(error);
         res.status(500).json(error);
@@ -16,17 +16,29 @@ const getUser = async(req, res)=>{
 };
 
 const getUserByFisrtname = async(req, res)=>{
+
     try {
         let user = new User(req.body.firstname);
-
-        let result = await client.openDbConnexion().collection("user").findOne(user);
-
-        res.status(200).json({result});
-
+        const client = await db();
+        let result = client.collection("user").findOne(user);
+        console.log(result);
+        res.send(result).status(200);
     } catch (error) {
         console.log(error);
         res.status(500).json(error);
     }
+
+    // try {
+    //     let user = new User(req.body.firstname);
+
+    //     let result = await client.openDbConnexion().collection("user").findOne(user);
+
+    //     res.status(200).json({result});
+
+    // } catch (error) {
+    //     console.log(error);
+    //     res.status(500).json(error);
+    // }
 };
 
 const addUser = async(req, res)=>{
