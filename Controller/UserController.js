@@ -1,9 +1,11 @@
 const { User } = require("../Models/User");
-const client = require("../DB/connexion");
+// const client = require("../DB/connexion");
+
+const {db} = require("../DB/db.js");
 
 const getUser = async(req, res)=>{
     try {
-        let result = await client.openDbConnexion().collection("user").find();
+        let result = await client.collection("user").find();
 
         res.status(200).json({result});
 
