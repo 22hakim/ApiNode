@@ -39,7 +39,7 @@ const addUser = async(req, res)=>{
 const deleteUser = async(req, res)=>{
     try {
         const client = await db();
-        let collection = await client.collection("user");
+        let collection = client.collection("user");
         let result = collection.deleteOne({ firstname : req.body.firstname});
         if (!result) res.status(404).send("Not found");
         else res.status(200).send("document deleted");
