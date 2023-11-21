@@ -10,49 +10,29 @@ const getUser = async(req, res)=>{
         .toArray();
         res.send(results).status(200);
     } catch (error) {
-        console.log(error);
         res.status(500).json(error);
     }
 };
 
 const getUserByFisrtname = async(req, res)=>{
-
     try {
-        let user = new User(req.body.firstname);
         const client = await db();
-        let result = client.collection("user").findOne(user);
-        console.log(result);
+        let result = await client.collection("user").findOne({ firstname : req.params.firstname});
         res.send(result).status(200);
     } catch (error) {
-        console.log(error);
         res.status(500).json(error);
     }
-
-    // try {
-    //     let user = new User(req.body.firstname);
-
-    //     let result = await client.openDbConnexion().collection("user").findOne(user);
-
-    //     res.status(200).json({result});
-
-    // } catch (error) {
-    //     console.log(error);
-    //     res.status(500).json(error);
-    // }
 };
 
 const addUser = async(req, res)=>{
     try {
         let user = new User(req.body.firstname, req.body.lastname);
-
-        let result = await client.openDbConnexion().collection("user").insertOne(user);
-        
+        const client = await db();
+        let result = await client.collection("user").insertOne(user);
         res.status(200).json(result);
-
     } catch (error) {
-        console.log(error);
         res.status(500).json(error);
     }
 };
 
-module.exports = { addUser,getUser,getUserByFisrtname };
+module.exports = { addUser, getUser, getUserByFisrtname };
