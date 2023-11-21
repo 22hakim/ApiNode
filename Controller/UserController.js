@@ -8,7 +8,7 @@ const getUser = async(req, res)=>{
         let results = await collection.find({})
         .limit(50)
         .toArray();
-        res.send(results).status(200);
+        res.status(200).send(results);
     } catch (error) {
         res.status(500).json(error);
     }
@@ -18,7 +18,8 @@ const getUserByFisrtname = async(req, res)=>{
     try {
         const client = await db();
         let result = await client.collection("user").findOne({ firstname : req.params.firstname});
-        res.send(result).status(200);
+        if (!result) res.status(404).send("Not found");
+        else res.status(200).send(result);
     } catch (error) {
         res.status(500).json(error);
     }
@@ -29,10 +30,22 @@ const addUser = async(req, res)=>{
         let user = new User(req.body.firstname, req.body.lastname);
         const client = await db();
         let result = await client.collection("user").insertOne(user);
-        res.status(200).json(result);
+        res.status(204).json(result);
     } catch (error) {
         res.status(500).json(error);
     }
 };
 
-module.exports = { addUser, getUser, getUserByFisrtname };
+const deleteUser = async(req, res)=>{
+    try {
+        const client = await db();
+        let collection = await client.collection("user");
+        let result = collection.deleteOne({ firstname : req.body.firstname});
+        if (!result) res.status(404).send("Not found");
+        else res.status(200).send("document deleted");
+    } catch (error) {
+        res.status(500).json(error);
+    }
+};
+
+module.exports = { addUser, getUser, getUserByFisrtname, deleteUser};
